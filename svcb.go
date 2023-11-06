@@ -248,18 +248,8 @@ func (rr *HTTPS) parse(c *zlexer, o string) *ParseError {
 	return rr.SVCB.parse(c, o)
 }
 
-// SvcParams defines a public interface for encoding and stringifying Service Params. It is
-// for use by applications such as DHCP servers that use Service Params outside the SVCB type,
-// e.g. as defined in RFC 9463. For these purposes, being able to manipulate Service Params is not
-// necessary.
-type SvcParams interface {
-	Pack() ([]byte, error) // Pack returns the wire encoding of all the Service Params
-	String() string        // String returns the presentation format of all the Service Params
-	Copy() SvcParams       // Copy returns a deep-copy of the Service Params
-}
-
-// SVCBKeyValues implements the SvcParams interface plus the Unpack method
-// for creating Service Params from wire encoding
+// SVCBKeyValues implements methods for handing Service Params when used outside of DNS RRs
+// for example in RFC
 type SVCBKeyValues []SVCBKeyValue
 
 func (s SVCBKeyValues) Pack() ([]byte, error) {
@@ -320,7 +310,7 @@ func (s SVCBKeyValues) String() string {
 	return outStr.String()
 }
 
-func (s SVCBKeyValues) Copy() SvcParams {
+func (s SVCBKeyValues) Copy() SVCBKeyValues {
 	xs := make(SVCBKeyValues, len(s))
 
 	for i := range s {

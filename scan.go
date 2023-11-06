@@ -651,7 +651,7 @@ func (zp *ZoneParser) Next() (RR, bool) {
 	return nil, false
 }
 
-// SvcParamsParser is a parser for SVCB Service Params
+// SvcParamsParser is a parser for SVCB Service Params when used standalone
 //
 // Basic usage pattern when reading from a string (s) containing the
 // service params
@@ -660,7 +660,7 @@ func (zp *ZoneParser) Next() (RR, bool) {
 //
 //		sp, ok := spp.Next()
 //	    if ok {
-//			// Do something with sp - see SvcParams type
+//			// Do something with sp - see SVCBKeyValues type
 //		}
 //
 //		if err := sp.Err(); err != nil {
@@ -704,18 +704,18 @@ func (spp *SvcParamsParser) setParseError(err string, l lex) {
 }
 
 // Next advances the parser to the next Service Params, returning
-// as (SvcParams, true).
+// as (SVCBKeyValues, true).
 // If parsing error occurs, returns (nil, false), and you can call the
 // Err method to get the error.
-func (spp *SvcParamsParser) Next() (sp SvcParams, ok bool) {
+func (spp *SvcParamsParser) Next() (sp SVCBKeyValues, ok bool) {
 	ok = true
 	spp.c.owner = false
-	xs, err := parseSVCBKeys(spp.c)
+	sp, err := parseSVCBKeys(spp.c)
 	if err != nil {
 		spp.setParseError(err.err, err.lex)
 		ok = false
 	}
-	return SVCBKeyValues(xs), ok
+	return sp, ok
 }
 
 type zlexer struct {
